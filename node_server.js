@@ -1,8 +1,8 @@
 const http = require('http');
-const { withAuthentication, FronteggContext, IdentityClient, EntitlementsClient} = require('@frontegg/client');
+const { withAuthentication, FronteggContext, IdentityClient, EntitlementsClient } = require('@frontegg/client');
 var cors = require('cors');
 var express = require('express');
-const {json} = require('express');
+const { json } = require('express');
 var app = express();
 
 
@@ -25,34 +25,41 @@ const accessTokensOptions = {
 // Initiating Frontegg with relevant enviorment credantials
 FronteggContext.init(
   {
-  FRONTEGG_CLIENT_ID: process.env.FRONTEGG_CLIENT_ID,
-  FRONTEGG_API_KEY: process.env.FRONTEGG_API_KEY,
-  FRONTEGG_API_GATEWAY_URL:'https://api.frontegg.com/'
-},
+    FRONTEGG_CLIENT_ID: process.env.FRONTEGG_CLIENT_ID,
+    FRONTEGG_API_KEY: process.env.FRONTEGG_API_KEY,
+    FRONTEGG_API_GATEWAY_URL: 'https://api.frontegg.com/'
+  },
 
-{
-  accessTokensOptions,
-},
+  {
+    accessTokensOptions,
+  },
 );
 
-const identityClient = new IdentityClient({ FRONTEGG_CLIENT_ID: process.env.FRONTEGG_CLIENT_ID, FRONTEGG_API_KEY: process.env.FRONTEGG_API_KEY });
+initServer(app);
 
-// Creating a safe route that is using entitelemnts
-app.get('/safe', withAuthentication(), async function (req, res) {
-  try{
-    const token  = req.get('Authorization')
-    const userOrTenantEntity = await identityClient.validateToken(token);
-    const client = await EntitlementsClient.init( /* */ );
-    await client.ready();
-    const userEntitlementsClient = client.forUser(userOrTenantEntity);
-    let result;
-    result = await userEntitlementsClient.isEntitledToFeature('test1');
-    res.send(`is user entiteled? ${JSON.stringify(result)}`);
-    res.status(200);
 
-  }
-  catch(error){
-    res.send(`Failed due to ${JSON.stringify(error)}`);
-  }
 
-});
+
+async function initServer(app) {
+  const identityClient = new IdentityClient({ FRONTEGG_CLIENT_ID: process.env.FRONTEGG_CLIENT_ID, FRONTEGG_API_KEY: process.env.FRONTEGG_API_KEY });
+  const client = await EntitlementsClient.init( /* */);
+  await client.ready();
+
+  // Creating a safe route that is using entitelemnts
+  app.get('/safe', withAuthentication(), async function (req, res) {
+    try {
+      const token = req.get('Authorization')
+      const userOrTenantEntity = await identityClient.validateToken(token);
+      const userEntitlementsClient = client.forUser(userOrTenantEntity);
+      let result;
+      result = await userEntitlementsClient.isEntitledToFeature('test1');
+      res.send(`is user entiteled? ${JSON.stringify(result)}`);
+      res.status(200);
+
+    }
+    catch (error) {
+      res.send(`Failed due to ${JSON.stringify(error)}`);
+    }
+
+  });
+}
