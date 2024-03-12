@@ -1,9 +1,6 @@
-## Installation
-
-```
-# node 14+
-```
-Use the package manager [npm](npm install @frontegg/client) to install frontegg client.
+## Prerequisites
+The minimum required Node.js SDK version for Entitlements is 5.3.0
+  
 
 ## Usage
 
