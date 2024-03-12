@@ -7,7 +7,7 @@ var app = express();
 
 
 app.listen(8001, function () {
-  console.log('Frontegg Node app listening on port 8001!');
+  console.log('Frontegg Node app listening on port 8001');
 });
 
 const accessTokensOptions = {
