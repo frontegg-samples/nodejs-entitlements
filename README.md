@@ -23,7 +23,3 @@ const userEntitlementsClient = client.forUser(userOrTenantEntity);
 result = await userEntitlementsClient.isEntitledToFeature('feature-name');
 
 ```
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
