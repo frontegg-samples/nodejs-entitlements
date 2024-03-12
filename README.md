@@ -1,6 +1,8 @@
 ## Installation
+```
 # node 14+
 Use the package manager [npm](npm install @frontegg/client) to install frontegg client.
+```
 
 ## Usage
 
